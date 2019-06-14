@@ -1,0 +1,46 @@
+<t-menubar></t-menubar>
+<div class="container">
+    <form [formGroup]="formGroup" class="my-3">
+        <div class="form-group">
+            <label>Hours per week</label>
+            <input formControlName="hours" type="number" class="form-control">
+        </div>
+        <div class="form-group">
+            <label>Rate</label>
+            <div class="input-group">
+                <input formControlName="percent" type="number" class="form-control">
+                <div class="input-group-append">
+                    <span class="input-group-text">%</span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Granularity of work log</label>
+            <div class="input-group">
+                <input formControlName="granularity" type="number" class="form-control">
+                <div class="input-group-append">
+                    <span class="input-group-text">minutes</span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Days</label>
+            <div class="custom-control custom-checkbox">
+                <input formControlName="mo_fr" id="settings_days_mo_fr" type="checkbox" class="custom-control-input">
+                <label class="custom-control-label" for="settings_days_mo_fr">Monday - Friday</label>
+            </div>
+            <div class="custom-control custom-checkbox">
+                <input formControlName="sa" id="settings_days_sa" type="checkbox" class="custom-control-input">
+                <label class="custom-control-label" for="settings_days_sa">Saturday (poor)</label>
+            </div>
+            <div class="custom-control custom-checkbox">
+                <input formControlName="su" id="settings_days_su" type="checkbox" class="custom-control-input">
+                <label class="custom-control-label" for="settings_days_su">Sunday (very poor)</label>
+            </div>
+        </div>
+        <div class="form-group text-center">
+            <button (click)="save()" [disabled]="!canSave" type="button" class="btn btn-primary mx-3">Save</button>
+            <button (click)="reset()" type="button" class="btn btn-secondary mx-3">Reset</button>
+        </div>
+    </form>
+</div>

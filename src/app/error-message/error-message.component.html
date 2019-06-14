@@ -1,0 +1,5 @@
+<div class="container">
+    <div *ngFor="let e of errors; let i = index" (click)="deleteByIndex(i)" class="alert alert-warning mt-3" role="alert">
+        <strong>Error:</strong>&nbsp;{{e}}
+    </div>
+</div>

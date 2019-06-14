@@ -1,0 +1,112 @@
+
+import {Injectable} from '@angular/core';
+import {CalendarJson, CalendarDayJson} from 'src/app/calendar/calendar';
+import {StoreService} from 'src/app/common/store.service';
+import {SettingsService} from 'src/app/settings/settings.service';
+import {TimeService} from 'src/app/common/time.service';
+
+@Injectable({
+    providedIn: 'root'
+})
+export class CalendarService {
+
+    private _data: CalendarJson;
+
+    constructor(private storeService: StoreService, private settingsService: SettingsService, private timeService: TimeService) {
+        this._data = this.storeService.load('calendar');
+        if (this._data === undefined) {
+            this._data = {
+                month: {}
+            };
+            this.save();
+        }
+    }
+
+    getAllEntriesByMonth(month: number): CalendarDayJson[] {
+        const ret: CalendarDayJson[] = [];
+        const monthJson = this._data.month[month];
+        if (monthJson !== undefined) {
+            for (let day in monthJson.day) {
+                ret.push(monthJson.day[parseInt(day)]);
+            }
+        }
+        return ret;
+    }
+
+    getAllMonthsAsDate(): Date[] {
+        const ret: Date[] = [];
+        for (let m = 0; m < 12; ++m) {
+            const d = new Date();
+            d.setMonth(m);
+            ret.push(d);
+        }
+        return ret;
+    }
+
+    getByDay(month: number, day: number): CalendarDayJson | undefined {
+        const m = this._data.month[month];
+        if (m === undefined) {
+            return undefined;
+        }
+        return m.day[day];
+    }
+
+    isTaskUsed(id: number): boolean {
+        for (let m in this._data.month) {
+            const days = this._data.month[parseInt(m)].day;
+            for (let d in days) {
+                for (let t in days[parseInt(d)].tasks) {
+                    if (parseInt(t) === id)
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    logTasks(startTime: number, tasks: {[key: number]: number}): void {
+        const startDate = this.timeService.timeToDate(startTime);
+        const entry = this.getEntryForDate(startDate);
+        entry.tasks = {};
+        for (let task in tasks) {
+            entry.tasks[parseInt(task)] = this.settingsService.adjustWithGranularity(tasks[task]);
+        }
+        this.save();
+    }
+
+    logWork(startTime: number, endTime: number, pauseDuration: number): void {
+        const startDate = this.timeService.timeToDate(startTime);
+        const entry = this.getEntryForDate(startDate);
+        entry.start = this.settingsService.adjustWithGranularity(startTime);
+        entry.end = this.settingsService.adjustWithGranularity(endTime);
+        entry.pause = this.settingsService.adjustWithGranularity(pauseDuration);
+        this.save();
+    }
+
+    private getEntryForDate(date: Date): CalendarDayJson {
+        const month = date.getMonth();
+        let monthJson = this._data.month[month];
+        if (monthJson === undefined) {
+            monthJson = {
+                day: {}
+            };
+            this._data.month[month] = monthJson;
+        }
+        const day = date.getDate();
+        let dayJson = monthJson.day[day];
+        if (dayJson === undefined) {
+            dayJson = {
+                start: 0,
+                end: 0,
+                pause: 0,
+                tasks: {}
+            };
+            monthJson.day[day] = dayJson;
+        }
+        return dayJson;
+    }
+
+    private save(): void {
+        this.storeService.save('calendar', this._data);
+    }
+}

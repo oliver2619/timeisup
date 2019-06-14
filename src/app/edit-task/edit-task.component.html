@@ -1,0 +1,30 @@
+<t-titlebar></t-titlebar>
+<div class="container">
+    <h4>Task</h4>
+    <form [formGroup]="formGroup">
+        <div class="form-group">
+            <label>Name</label>
+            <input formControlName="name" type="text" class="form-control">
+        </div>
+        <div class="form-group">
+            <label>Categories</label>
+            <div *ngIf="canSelectCategory" class="form-row">
+                <div class="col-10">
+                    <select formControlName="category" class="custom-select">
+                        <option *ngFor="let c of allCategories" value="{{c.id}}">{{c.name}}</option>
+                    </select>
+                </div>
+                <div class="col-2">
+                    <button (click)="addCategory()" [disabled]="!canAddCategory" type="button" class="btn btn-secondary"><span class="fas fa-plus"></span></button>
+                </div>
+            </div>
+            <div class="my-1">
+                <t-tag *ngFor="let c of categories" value="{{c.name}}" (close)="removeCategory(c.id)"></t-tag>
+            </div>
+        </div>
+    </form>
+    <div class="text-center">
+        <button (click)="onSave()" [disabled]="!canSave" type="button" class="btn btn-primary mx-3">Save</button>
+        <button routerLink="/tasks" type="button" class="btn btn-secondary mx-3">Cancel</button>
+    </div>
+</div>

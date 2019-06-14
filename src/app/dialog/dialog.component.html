@@ -1,0 +1,12 @@
+<ng-template #dialog class="modal" role="dialog">
+    <div class="modal-header">
+        <h4 class="modal-title">{{title}}</h4>
+    </div>
+    <div class="modal-body">
+        <ng-content></ng-content>
+    </div>
+    <div class="modal-footer">
+        <button (click)="ok()" [disabled]="!enabled" type="button" class="btn btn-primary">OK</button>
+        <button (click)="cancel()" type="button" class="btn btn-secondary">Cancel</button>
+    </div>
+</ng-template>

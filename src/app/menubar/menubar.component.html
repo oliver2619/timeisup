@@ -1,0 +1,18 @@
+<div class="navbar navbar-expand navbar-light bg-light">
+    <a routerLink="/dashboard" class="navbar-brand" href="javascript:;"><span class="fas fa-stopwatch"></span>&nbsp;Time is up</a>
+    <ul class="navbar-nav mr-auto">
+        <li routerLinkActive="active" class="nav-item"><a routerLink="/timecontrol" class="nav-link" href="javascript:;"><span class="fas fa-calendar-day"></span></a></li>
+        <li routerLinkActive="active" class="nav-item"><a routerLink="/calendar" class="nav-link" href="javascript:;"><span class="fas fa-calendar-alt"></span></a></li>
+    </ul>
+    <ul class="navbar-nav">
+        <li ngbDropdown display="dynamic" autoClose="outside" class="nav-item dropdown">
+            <a ngbDropdownToggle href="javascript:;" role="button" class="nav-link"><span class="fas fa-bars"></span></a>
+            <div ngbDropdownMenu>
+                <button ngbDropdownItem routerLink="/tasks" routerLinkActive="active">Tasks</button>
+                <button ngbDropdownItem routerLink="/categories" routerLinkActive="active">Categories</button>
+                 <div class="dropdown-divider"></div>
+                <button ngbDropdownItem routerLink="/settings" routerLinkActive="active">Settings</button>
+            </div>
+        </li>
+    </ul>
+</div>
