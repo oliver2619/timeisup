@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormGroup, FormBuilder, Validators, AbstractControl} from '@angular/forms';
 import {SettingsService} from 'src/app/settings/settings.service';
+import {Router} from '@angular/router';
 
 @Component({
     selector: 't-settings',
@@ -11,11 +12,13 @@ export class SettingsComponent implements OnInit {
 
     formGroup: FormGroup;
 
-    get canSave(): boolean {
-        return this.formGroup.valid;
-    }
+    get canSave(): boolean {return this.formGroup.valid;}
 
-    constructor(private formBuilder: FormBuilder, private settingsService: SettingsService) {}
+    constructor(
+        private formBuilder: FormBuilder,
+        private settingsService: SettingsService,
+        private router: Router
+    ) {}
 
     ngOnInit(): void {
         this.formGroup = this.formBuilder.group({}, {
@@ -58,5 +61,6 @@ export class SettingsComponent implements OnInit {
             sa: work['sa'],
             su: work['su']
         };
+        this.router.navigateByUrl('/dashboard');
     }
 }

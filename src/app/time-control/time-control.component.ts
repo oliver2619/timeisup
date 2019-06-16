@@ -10,7 +10,6 @@ import {DialogComponent, Dialog} from 'src/app/dialog/dialog.component';
 import {EditTimeComponent} from 'src/app/edit-time/edit-time.component';
 import {CalendarService} from 'src/app/calendar/calendar.service';
 import {TimeService} from 'src/app/common/time.service';
-import {SettingsService} from 'src/app/settings/settings.service';
 
 @Component({
     selector: 't-time-control',
@@ -55,12 +54,11 @@ export class TimeControlComponent implements OnInit, OnDestroy {
         return this.timeControlService.endWork === undefined && this.timeControlService.startWork !== undefined;
     }
 
-    get endDate(): Date {
-        if (this.timeControlService.endWork === undefined)
-            return null;
-        const ret = new Date();
-        ret.setTime(this.timeControlService.endWork);
-        return ret;
+    get endDate(): Date {return this.timeService.timeToDate(this.timeControlService.endWork);}
+
+    get endPauseDate(): Date {
+        if (this.timeControlService.startPause !== undefined)
+            return this.timeService.timeToDate(this.timeControlService.startPause + this.timeControlService.paused);
     }
 
     get paused(): number {
@@ -76,6 +74,8 @@ export class TimeControlComponent implements OnInit, OnDestroy {
         ret.setTime(this.timeControlService.startWork);
         return ret;
     }
+
+    get startPauseDate(): Date {return this.timeService.timeToDate(this.timeControlService.startPause);}
 
     get tasks(): TaskJson[] {
         return this.tasksService.all;
@@ -93,8 +93,7 @@ export class TimeControlComponent implements OnInit, OnDestroy {
         private messageBoxService: MessageBoxService,
         private tasksService: TasksService,
         private calendarService: CalendarService,
-        private timeService: TimeService,
-        private settingsService: SettingsService
+        private timeService: TimeService
     ) {}
 
     editEndTime(): void {
@@ -160,7 +159,7 @@ export class TimeControlComponent implements OnInit, OnDestroy {
     save(): void {
         this.messageBoxService.question('Have you finished all work for today?', QuestionMode.YES_NO, 'Saving worklog').subscribe(r => {
             if (r === QuestionResult.YES) {
-                this.calendarService.logWork(this.timeControlService.startWork, this.timeControlService.endWork, this.timeControlService.paused);
+                this.calendarService.logWork(this.timeControlService.startWork, this.timeControlService.endWork, this.timeControlService.firstPause, this.timeControlService.paused);
                 this.calendarService.logTasks(this.timeControlService.startWork, this.timeControlService.tasks);
                 this.timeControlService.reset();
                 this.reload();

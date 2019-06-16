@@ -74,12 +74,13 @@ export class CalendarService {
         this.save();
     }
 
-    logWork(startTime: number, endTime: number, pauseDuration: number): void {
+    logWork(startTime: number, endTime: number, startPause: number, pauseDuration: number): void {
         const startDate = this.timeService.timeToDate(startTime);
         const entry = this.getEntryForDate(startDate);
-        entry.start = this.settingsService.adjustWithGranularity(startTime);
-        entry.end = this.settingsService.adjustWithGranularity(endTime);
-        entry.pause = this.settingsService.adjustWithGranularity(pauseDuration);
+        entry.startWork = this.settingsService.adjustWithGranularity(startTime);
+        entry.endWork = this.settingsService.adjustWithGranularity(endTime);
+        entry.startPause = this.settingsService.adjustWithGranularity(startPause);
+        entry.endPause = this.settingsService.adjustWithGranularity(startPause + pauseDuration);
         this.save();
     }
 
@@ -96,9 +97,10 @@ export class CalendarService {
         let dayJson = monthJson.day[day];
         if (dayJson === undefined) {
             dayJson = {
-                start: 0,
-                end: 0,
-                pause: 0,
+                startWork: 0,
+                endWork: 0,
+                startPause: 0,
+                endPause: 0,
                 tasks: {}
             };
             monthJson.day[day] = dayJson;

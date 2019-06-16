@@ -9,6 +9,8 @@ export class TimeService {
     constructor() {}
 
     durationToDate(duration: number): Date {
+        if (duration === undefined)
+            return undefined;
         const ret = new Date();
         ret.setHours(0);
         ret.setMinutes(0);
@@ -17,8 +19,10 @@ export class TimeService {
         ret.setTime(ret.getTime() + duration);
         return ret;
     }
-    
+
     timeToDate(time: number): Date {
+        if (time === undefined)
+            return undefined;
         const ret = new Date();
         ret.setTime(time);
         return ret;

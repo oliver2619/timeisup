@@ -51,24 +51,28 @@ export class EditDayComponent implements OnInit {
     }
 
     get durationDate(): Date {
-        return this.timeService.durationToDate(this._data.end - this._data.start - this._data.pause);
+        return this.timeService.durationToDate(this._data.endWork - this._data.startWork - this._data.endPause + this._data.startPause);
     }
 
     get durationHours(): number {
-        return (this._data.end - this._data.start - this._data.pause) / (1000 * 60 * 60);
+        return (this._data.endWork - this._data.startWork - this._data.endPause + this._data.startPause) / (1000 * 60 * 60);
     }
 
-    get end(): Date {return this.timeService.timeToDate(this._data.end);}
+    get end(): Date {return this.timeService.timeToDate(this._data.endWork);}
+
+    get endPause(): Date {return this.timeService.timeToDate(this._data.endPause);}
 
     get pausedDate(): Date {
-        return this.timeService.durationToDate(this._data.pause);
+        return this.timeService.durationToDate(this._data.endPause - this._data.startPause);
     }
 
     get pausedHours(): number {
-        return this._data.pause / (1000 * 60 * 60);
+        return (this._data.endPause - this._data.startPause) / (1000 * 60 * 60);
     }
 
-    get start(): Date {return this.timeService.timeToDate(this._data.start);}
+    get start(): Date {return this.timeService.timeToDate(this._data.startWork);}
+
+    get startPause(): Date {return this.timeService.timeToDate(this._data.startPause);}
 
     get tasks(): EditDayTaskData[] {
         const ret: EditDayTaskData[] = [];

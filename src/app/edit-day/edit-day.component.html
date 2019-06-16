@@ -8,6 +8,10 @@
                 <td colspan="2" class="text-center">{{start | date:'H:mm'}} - {{end | date:'H:mm'}}</td>
             </tr>
             <tr>
+                <th>Pause</th>
+                <td colspan="2" class="text-center">{{startPause | date:'H:mm'}} - {{endPause | date:'H:mm'}}</td>
+            </tr>
+            <tr>
                 <th>Worked</th>
                 <td class="text-right">{{durationDate | date:'H:mm'}}</td>
                 <td class="text-right">{{durationHours | number:'1.1-1'}} h</td>

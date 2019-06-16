@@ -30,21 +30,38 @@
         </div>
         <div class="form-row">
             <div class="form-group col">
-                <label>Paused</label>
+                <label>Start pause</label>
                 <div class="input-group">
-                    <div *ngIf="canPause || canResume" class="input-group-prepend">
+                    <div *ngIf="canPause" class="input-group-prepend">
                         <button *ngIf="canPause" (click)="pause()" class="btn btn-warning"><span class="fas fa-pause"></span></button>
-                        <button *ngIf="canResume" (click)="resume()" class="btn btn-success"><span class="fas fa-play"></span></button>
                     </div>
-                    <input type="text" readonly="readonly" class="form-control" value="{{pausedDate | date:'H:mm'}}">
+                    <input type="text" readonly="readonly" class="form-control" value="{{startPauseDate | date:'H:mm'}}">
                     <div class="input-group-append">
                         <button (click)="editPauseTime()" type="button" class="btn btn-secondary"><span class="fas fa-edit"></span></button>
                     </div>
                 </div>
             </div>
             <div class="form-group col">
+                <label>End pause</label>
+                <div class="input-group">
+                    <div *ngIf="canResume" class="input-group-prepend">
+                        <button *ngIf="canResume" (click)="resume()" class="btn btn-success"><span class="fas fa-play"></span></button>
+                    </div>
+                    <input type="text" readonly="readonly" class="form-control" value="{{endPauseDate | date:'H:mm'}}">
+                    <div class="input-group-append">
+                        <button (click)="editPauseTime()" type="button" class="btn btn-secondary"><span class="fas fa-edit"></span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col">
                 <label>Worked</label>
                 <input type="text" readonly="readonly" class="form-control" value="{{workedDate | date:'H:mm'}} / {{worked | number:'1.1-1'}} h">
+            </div>
+            <div class="form-group col">
+                <label>Paused</label>
+                <input type="text" readonly="readonly" class="form-control" value="{{pausedDate | date:'H:mm'}} / {{paused | number:'1.1-1'}} h">
             </div>
         </div>
         <div class="form-group">

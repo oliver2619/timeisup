@@ -17,6 +17,8 @@ export class TimeControlService {
         this.save();
     }
 
+    get firstPause(): number {return this._data.firstPause;}
+
     get paused(): number {
         if (this._data.startPause !== undefined)
             return this._data.paused + Date.now() - this._data.startPause;
@@ -48,9 +50,9 @@ export class TimeControlService {
         const now = Date.now();
         this.logTask(now);
         this._data.currentTask = id;
-        this._data.startTask = now;
-        if (this._data.tasks[id] === undefined)
-            this._data.tasks[id] = 0;
+        if (this._data.startWork !== undefined) {
+            this.startTask(now);
+        }
         this.save();
     }
 
@@ -88,6 +90,8 @@ export class TimeControlService {
             this._data.startPause = now;
             this.logTask(now);
             this._data.startTask = undefined;
+            if (this._data.firstPause === undefined)
+                this._data.firstPause = now;
             this.save();
         }
     }
@@ -106,7 +110,7 @@ export class TimeControlService {
             const now = Date.now();
             this._data.paused += now - this._data.startPause;
             this._data.startPause = undefined;
-            this._data.startTask = now;
+            this.startTask(now);
             this.save();
         }
     }
@@ -115,7 +119,7 @@ export class TimeControlService {
         if (this._data.startWork === undefined) {
             const now = Date.now();
             this._data.startWork = now;
-            this._data.startTask = now;
+            this.startTask(now);
             this.save();
         }
     }
@@ -133,6 +137,12 @@ export class TimeControlService {
 
     private save(): void {
         this.storeService.save('timeControl', this._data);
+    }
+
+    private startTask(time: number): void {
+        this._data.startTask = time;
+        if (this._data.tasks[this._data.currentTask] === undefined)
+            this._data.tasks[this._data.currentTask] = 0;
     }
 
     private logTask(time: number): void {

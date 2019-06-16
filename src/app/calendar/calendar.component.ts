@@ -23,12 +23,12 @@ export class CalendarComponent implements OnInit {
         const month = parseInt(this.formGroup.value['month']);
         //const filter = this.formGroup.value['filter'];
         const list = this.calendarService.getAllEntriesByMonth(month);
-        list.sort((e1, e2) => e1.start - e2.start);
+        list.sort((e1, e2) => e1.startWork - e2.startWork);
         return list.map(e => {
             return {
-                start: this.timeService.timeToDate(e.start),
-                time: this.timeService.durationToDate(e.end - e.start - e.pause),
-                duration: (e.end - e.start - e.pause) / (1000 * 60 * 60)
+                start: this.timeService.timeToDate(e.startWork),
+                time: this.timeService.durationToDate(e.endWork - e.startWork - e.endPause + e.startPause),
+                duration: (e.endWork - e.startWork - e.endPause + e.startPause) / (1000 * 60 * 60)
             };
         });
     }

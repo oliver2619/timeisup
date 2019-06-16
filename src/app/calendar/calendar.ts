@@ -1,8 +1,9 @@
 
 export interface CalendarDayJson {
-    start: number;
-    end: number;
-    pause: number;
+    startWork: number;
+    endWork: number;
+    startPause: number;
+    endPause: number;
     tasks: {[key: number]: number};
 }
 
