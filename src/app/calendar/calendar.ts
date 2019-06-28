@@ -1,10 +1,15 @@
+export interface CalendarEventJson {
+    event: number;
+    time: number;
+}
 
 export interface CalendarDayJson {
     startWork: number;
     endWork: number;
-    startPause: number;
-    endPause: number;
+    paused: number;
     tasks: {[key: number]: number};
+    events: CalendarEventJson[];
+    comments: {[key: number]: string};
 }
 
 export interface CalendarMonthJson {
@@ -13,4 +18,5 @@ export interface CalendarMonthJson {
 
 export interface CalendarJson {
     month: {[key: number]: CalendarMonthJson};
+    roundingBonus: number;
 }

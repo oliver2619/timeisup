@@ -6,11 +6,17 @@ import {CalendarDayJson} from 'src/app/calendar/calendar';
 import {TimeService} from 'src/app/common/time.service';
 import {TasksService} from 'src/app/tasks/tasks.service';
 import {CategoriesService} from 'src/app/categories/categories.service';
+import {EventsService} from 'src/app/events/events.service';
 
 export interface EditDayTaskData {
     name: string;
     durationHours: number;
     durationDate: Date;
+}
+
+export interface EditDayEventData {
+    time: Date;
+    event: string;
 }
 
 @Component({
@@ -51,28 +57,33 @@ export class EditDayComponent implements OnInit {
     }
 
     get durationDate(): Date {
-        return this.timeService.durationToDate(this._data.endWork - this._data.startWork - this._data.endPause + this._data.startPause);
+        return this.timeService.durationToDate(this._data.endWork - this._data.startWork - this._data.paused);
     }
 
     get durationHours(): number {
-        return (this._data.endWork - this._data.startWork - this._data.endPause + this._data.startPause) / (1000 * 60 * 60);
+        return (this._data.endWork - this._data.startWork - this._data.paused) / (1000 * 60 * 60);
     }
 
     get end(): Date {return this.timeService.timeToDate(this._data.endWork);}
 
-    get endPause(): Date {return this.timeService.timeToDate(this._data.endPause);}
+    get events(): EditDayEventData[] {
+        return this._data.events.map(e => {
+            return {
+                time: this.timeService.timeToDate(e.time),
+                event: this.eventsService.getEventNameById(e.event)
+            };
+        });
+    }
 
     get pausedDate(): Date {
-        return this.timeService.durationToDate(this._data.endPause - this._data.startPause);
+        return this.timeService.durationToDate(this._data.paused);
     }
 
     get pausedHours(): number {
-        return (this._data.endPause - this._data.startPause) / (1000 * 60 * 60);
+        return (this._data.paused) / (1000 * 60 * 60);
     }
 
     get start(): Date {return this.timeService.timeToDate(this._data.startWork);}
-
-    get startPause(): Date {return this.timeService.timeToDate(this._data.startPause);}
 
     get tasks(): EditDayTaskData[] {
         const ret: EditDayTaskData[] = [];
@@ -97,7 +108,8 @@ export class EditDayComponent implements OnInit {
         private calendarService: CalendarService,
         private timeService: TimeService,
         private tasksService: TasksService,
-        private categoriesService: CategoriesService
+        private categoriesService: CategoriesService,
+        private eventsService: EventsService
     ) {}
 
     ngOnInit(): void {

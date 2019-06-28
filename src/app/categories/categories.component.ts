@@ -1,13 +1,11 @@
 
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormGroup, FormBuilder, Validators} from '@angular/forms';
 import {CategoriesService} from 'src/app/categories/categories.service';
 import {CategoryJson} from 'src/app/categories/category';
 import {ErrorMessageService} from 'src/app/error-message/error-message.service';
 import {QuestionResult, QuestionMode} from 'src/app/message-box/message-box';
 import {MessageBoxService} from 'src/app/message-box/message-box.service';
-import {DialogComponent, Dialog} from 'src/app/dialog/dialog.component';
-import {EditCategoryComponent} from 'src/app/edit-category/edit-category.component';
 import {Router} from '@angular/router';
 import {TasksService} from 'src/app/tasks/tasks.service';
 

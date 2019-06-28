@@ -1,0 +1,4 @@
+<button *ngIf="canStart" (click)="start()" class="btn btn-success btn-lg mx-3"><span class="fas fa-play"></span></button>
+<button *ngIf="canPause" (click)="pause()" class="btn btn-warning btn-lg mx-3"><span class="fas fa-pause"></span></button>
+<button *ngIf="canResume" (click)="resume()" class="btn btn-success btn-lg mx-3"><span class="fas fa-play"></span></button>
+<button *ngIf="canStop" (click)="stop()" class="btn btn-danger btn-lg mx-3"><span class="fas fa-stop"></span></button>        

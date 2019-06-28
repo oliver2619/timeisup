@@ -1,100 +1,61 @@
 <t-menubar></t-menubar>
 <div class="container">
     <form [formGroup]="formGroup" class="my-3">
-        <!-- <ngb-timepicker formControlName="startTime"></ngb-timepicker> -->
-        <div class="form-row">
-            <div class="form-group col">
-                <label>Start time</label>
-                <div class="input-group">
-                    <div *ngIf="canStart" class="input-group-prepend">
-                        <button (click)="start()" class="btn btn-success w-100"><span class="fas fa-play"></span></button>        
-                    </div>
-                    <input type="text" readonly="readonly" value="{{startDate | date:'H:mm'}}" class="form-control">
-                    <div class="input-group-append">
-                        <button (click)="editStartTime()" type="button" class="btn btn-secondary"><span class="fas fa-edit"></span></button>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group col">
-                <label>End time</label>
-                <div class="input-group">
-                    <div *ngIf="canStop" class="input-group-prepend">
-                        <button (click)="stop()" class="btn btn-danger w-100"><span class="fas fa-stop"></span></button>        
-                    </div>
-                    <input type="text" readonly="readonly" value="{{endDate | date:'H:mm'}}" class="form-control">
-                    <div class="input-group-append">
-                        <button (click)="editEndTime()" type="button" class="btn btn-secondary"><span class="fas fa-edit"></span></button>
-                    </div>
+        <div class="form-group text-center">
+            <t-time-control-buttons></t-time-control-buttons>
+        </div>
+        <div *ngIf="canStartTask" class="form-group">
+            <label>Current task</label>
+            <div class="input-group">
+                <select formControlName="task" class="custom-select">
+                    <option [value]="0"></option>
+                    <option *ngFor="let t of tasks" [value]="t.id">{{t.name}}</option>
+                </select>
+                <div class="input-group-append">
+                    <button (click)="startTask()" class="btn btn-primary"><span class="fas fa-play"></span></button>
                 </div>
             </div>
         </div>
-        <div class="form-row">
-            <div class="form-group col">
-                <label>Start pause</label>
-                <div class="input-group">
-                    <div *ngIf="canPause" class="input-group-prepend">
-                        <button *ngIf="canPause" (click)="pause()" class="btn btn-warning"><span class="fas fa-pause"></span></button>
-                    </div>
-                    <input type="text" readonly="readonly" class="form-control" value="{{startPauseDate | date:'H:mm'}}">
-                    <div class="input-group-append">
-                        <button (click)="editPauseTime()" type="button" class="btn btn-secondary"><span class="fas fa-edit"></span></button>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group col">
-                <label>End pause</label>
-                <div class="input-group">
-                    <div *ngIf="canResume" class="input-group-prepend">
-                        <button *ngIf="canResume" (click)="resume()" class="btn btn-success"><span class="fas fa-play"></span></button>
-                    </div>
-                    <input type="text" readonly="readonly" class="form-control" value="{{endPauseDate | date:'H:mm'}}">
-                    <div class="input-group-append">
-                        <button (click)="editPauseTime()" type="button" class="btn btn-secondary"><span class="fas fa-edit"></span></button>
-                    </div>
+        <div *ngIf="canSelectEvent" class="form-group">
+            <label>Event</label>
+            <div class="input-group">
+                <select formControlName="event" class="custom-select">
+                    <option *ngFor="let e of events" [value]="e.id">{{e.name}}</option>
+                </select>
+                <div class="input-group-append">
+                    <button (click)="recordEvent()" [disabled]="!canRecordEvent" class="btn btn-primary"><span class="fas fa-plus"></span></button>
                 </div>
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col">
                 <label>Worked</label>
-                <input type="text" readonly="readonly" class="form-control" value="{{workedDate | date:'H:mm'}} / {{worked | number:'1.1-1'}} h">
+                <input type="text" readonly="readonly" class="form-control" value="{{workedDate | date:'H:mm'}} / {{workedHours | number:'1.1-1'}} h">
             </div>
             <div class="form-group col">
                 <label>Paused</label>
-                <input type="text" readonly="readonly" class="form-control" value="{{pausedDate | date:'H:mm'}} / {{paused | number:'1.1-1'}} h">
+                <input type="text" readonly="readonly" class="form-control" value="{{pausedDate | date:'H:mm'}}">
             </div>
-        </div>
-        <div class="form-group">
-            <label>Task</label>
-            <select formControlName="task" class="custom-select">
-                <option [value]="0"></option>
-                <option *ngFor="let t of tasks" [value]="t.id">{{t.name}}</option>
-            </select>
         </div>
         <div class="form-group">
             <ngb-accordion>
                 <ngb-panel>
                     <ng-template ngbPanelHeader let-opened="opened">
                         <div class="d-flex align-items-center justify-content-between">
-                            <h5 class="m-0">Tasks</h5>
+                            <h5 class="m-0">Log</h5>
                             <div>
                                 <button ngbPanelToggle class="btn btn-sm btn-secondary"><span *ngIf="opened" class="fas fa-caret-up"></span><span *ngIf="!opened" class="fas fa-caret-down"></span></button>
                             </div>
                         </div>
                     </ng-template>
                     <ng-template ngbPanelContent>
-                        <table class="table table-sm">
-                            <tbody>
-                                <tr *ngFor="let task of taskLogs">
-                                    <td>{{task.name}}</td>
-                                    <td class="text-right">{{task.time | date:'H:mm'}}</td>
-                                    <td class="text-right">{{task.duration | number:'1.1-1'}} h</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <t-time-control-log></t-time-control-log>
                     </ng-template>
                 </ngb-panel>
             </ngb-accordion>
+        </div>
+        <div *ngIf="!canSave && isFinished" class="form-group">
+            <div class="alert alert-danger" role="alert">One or more start times are not correct.</div>
         </div>
         <div class="form-group text-center">
             <button (click)="save()" [disabled]="!canSave" class="btn btn-primary mx-3" type="button">Save worklog</button>
@@ -102,4 +63,3 @@
         </div>
     </form>
 </div>
-<t-dialog [content]="time"><t-edit-time #time></t-edit-time></t-dialog>

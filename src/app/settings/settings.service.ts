@@ -18,12 +18,17 @@ export class SettingsService {
                     hoursPerWeek: 40,
                     workingRate: 1,
                     granularity: 30,
+                    maxHoursPerDay: 0,
                     mo_fr: true,
                     sa: false,
                     su: false
                 }
             };
         }
+    }
+
+    get maxTimePerDay(): number {
+        return this._data.work.maxHoursPerDay * 60 * 60 * 1000;
     }
 
     get timePerDay(): number {

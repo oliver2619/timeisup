@@ -8,18 +8,14 @@
                 <td colspan="2" class="text-center">{{start | date:'H:mm'}} - {{end | date:'H:mm'}}</td>
             </tr>
             <tr>
-                <th>Pause</th>
-                <td colspan="2" class="text-center">{{startPause | date:'H:mm'}} - {{endPause | date:'H:mm'}}</td>
+                <th>Paused</th>
+                <td class="text-right">{{pausedDate | date:'H:mm'}}</td>
+                <td class="text-right">{{pausedHours | number:'1.1-1'}} h</td>
             </tr>
             <tr>
                 <th>Worked</th>
                 <td class="text-right">{{durationDate | date:'H:mm'}}</td>
                 <td class="text-right">{{durationHours | number:'1.1-1'}} h</td>
-            </tr>
-            <tr>
-                <th>Paused</th>
-                <td class="text-right">{{pausedDate | date:'H:mm'}}</td>
-                <td class="text-right">{{pausedHours | number:'1.1-1'}} h</td>
             </tr>
             <tr *ngFor="let t of tasks">
                 <td>{{t.name}}</td>
@@ -30,6 +26,14 @@
                 <td>{{c.name}}</td>
                 <td class="text-right">{{c.durationDate | date:'H:mm'}}</td>
                 <td class="text-right">{{c.durationHours | number:'1.1-1'}} h</td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm">
+        <tbody>
+            <tr *ngFor="let e of events">
+                <td>{{e.time | date:'H:mm'}}</td>
+                <td>{{e.event}}</td>
             </tr>
         </tbody>
     </table>

@@ -1,0 +1,23 @@
+<t-menubar></t-menubar>
+<div class="container">
+    <h5>Events</h5>
+    <table class="table">
+        <tbody>
+            <tr *ngFor="let e of events">
+                <td>{{e.name}}</td>
+                <td>
+                    <button (click)="editById(e.id)" class="btn btn-secondary btn-sm"><span class="fas fa-edit"></span></button>
+                    <button (click)="deleteById(e.id)" class="btn btn-danger btn-sm ml-3"><span class="fas fa-times"></span></button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <form [formGroup]="formGroup">
+        <div class="input-group">
+            <input formControlName="name" type="text" class="form-control" placeholder="New event">
+            <div class="input-group-append">
+                <button (click)="add()" [disabled]="!canAdd" class="btn btn-secondary btn-sm"><span class="fas fa-plus"></span></button>
+            </div>
+        </div>
+    </form>
+</div>

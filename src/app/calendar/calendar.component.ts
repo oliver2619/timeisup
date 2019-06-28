@@ -3,6 +3,8 @@ import {FormGroup, FormBuilder} from '@angular/forms';
 import {CalendarService} from 'src/app/calendar/calendar.service';
 import {TimeService} from 'src/app/common/time.service';
 import {Router} from '@angular/router';
+import {MessageBoxService} from 'src/app/message-box/message-box.service';
+import {QuestionMode, QuestionResult} from 'src/app/message-box/message-box';
 
 export interface CalendarData {
     start: Date;
@@ -27,8 +29,8 @@ export class CalendarComponent implements OnInit {
         return list.map(e => {
             return {
                 start: this.timeService.timeToDate(e.startWork),
-                time: this.timeService.durationToDate(e.endWork - e.startWork - e.endPause + e.startPause),
-                duration: (e.endWork - e.startWork - e.endPause + e.startPause) / (1000 * 60 * 60)
+                time: this.timeService.durationToDate(e.endWork - e.startWork - e.paused),
+                duration: (e.endWork - e.startWork - e.paused) / (1000 * 60 * 60)
             };
         });
     }
@@ -41,8 +43,17 @@ export class CalendarComponent implements OnInit {
         private formBuilder: FormBuilder,
         private calendarService: CalendarService,
         private timeService: TimeService,
-        private router: Router
+        private router: Router,
+        private messageBoxService: MessageBoxService
     ) {}
+
+    deleteDay(day: Date): void {
+        this.messageBoxService.question(`Do you want to delete entry for day ${day.getDate()}?`, QuestionMode.YES_NO, 'Delete day').subscribe(result => {
+            if (result === QuestionResult.YES) {
+                this.calendarService.deleteDay(day.getMonth(), day.getDate());
+            }
+        });
+    }
 
     editDay(day: Date): void {
         this.router.navigate(['/calendar', day.getMonth(), day.getDate()]);

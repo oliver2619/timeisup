@@ -23,6 +23,14 @@ import { EditTimeComponent } from './edit-time/edit-time.component';
 import { EditDayComponent } from './edit-day/edit-day.component';
 import { TitlebarComponent } from './titlebar/titlebar.component';
 import { TagComponent } from './tag/tag.component';
+import { EventsComponent } from './events/events.component';
+import { EditEventComponent } from './edit-event/edit-event.component';
+import { TimeControlButtonsComponent } from './time-control-buttons/time-control-buttons.component';
+import { TimeControlLogComponent } from './time-control-log/time-control-log.component';
+import { EditStartEndTimeComponent } from './edit-start-end-time/edit-start-end-time.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
+import { AboutComponent } from './about/about.component';
 
 @NgModule({
     declarations: [
@@ -43,13 +51,20 @@ import { TagComponent } from './tag/tag.component';
         EditTimeComponent,
         EditDayComponent,
         TitlebarComponent,
-        TagComponent
+        TagComponent,
+        EventsComponent,
+        EditEventComponent,
+        TimeControlButtonsComponent,
+        TimeControlLogComponent,
+        EditStartEndTimeComponent,
+        AboutComponent
     ],
     imports: [
         BrowserModule,
         AppRoutingModule,
         ReactiveFormsModule,
-        NgbModule
+        NgbModule,
+        ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
     ],
     providers: [],
     bootstrap: [AppComponent]

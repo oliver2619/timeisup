@@ -10,7 +10,6 @@
             <div class="form-group col">
                 <select formControlName="filter" class="custom-select custom-select-lg">
                     <option value="worked">Worked</option>
-                    <option value="absences">Absences</option>
                     <option value="all">All</option>
                 </select>
             </div>
@@ -24,6 +23,7 @@
                 <td>{{day.duration | number:'1.1-1'}} h</td>
                 <td>
                     <button (click)="editDay(day.start)" class="btn btn-sm btn-secondary ml-2"><span class="fas fa-edit"></span></button>
+                    <button (click)="deleteDay(day.start)" class="btn btn-danger btn-sm ml-3"><span class="fas fa-times"></span></button>
                 </td>
             </tr>
         </tbody>

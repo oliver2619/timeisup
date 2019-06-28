@@ -1,0 +1,14 @@
+<t-titlebar></t-titlebar>
+<div class="container">
+    <h4>Event</h4>
+    <form [formGroup]="formGroup">
+        <div class="form-group">
+            <label>Name</label>
+            <input formControlName="name" type="text" class="form-control">
+        </div>
+    </form>
+    <div class="text-center">
+        <button (click)="onSave()" [disabled]="!canSave" type="button" class="btn btn-primary mx-3">Save</button>
+        <button routerLink="/events" type="button" class="btn btn-secondary mx-3">Cancel</button>
+    </div>
+</div>

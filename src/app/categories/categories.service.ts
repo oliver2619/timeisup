@@ -55,7 +55,7 @@ export class CategoriesService {
         if (cat !== undefined && cat.name !== name) {
             const found = this.getByName(name);
             if(found !== undefined)
-                throw new Error(`There already is a category with the name '${name}'`);
+                throw new Error(`Category with name ${name} already exists.`);
             cat.name = name;
         }
     }

@@ -1,7 +1,7 @@
 
 import {Injectable} from '@angular/core';
 import {StoreService} from 'src/app/common/store.service';
-import {TimeControlJson} from 'src/app/time-control/time-control';
+import {TimeControlJson, TimeControlEventJson, TimeControlEventType} from 'src/app/time-control/time-control';
 
 @Injectable({
     providedIn: 'root'
@@ -17,23 +17,32 @@ export class TimeControlService {
         this.save();
     }
 
-    get firstPause(): number {return this._data.firstPause;}
-
-    get paused(): number {
-        if (this._data.startPause !== undefined)
-            return this._data.paused + Date.now() - this._data.startPause;
-        else
-            return this._data.paused;
+    get events(): TimeControlEventJson[] {
+        return this._data.events.filter(e => true);
     }
 
-    set paused(time: number) {
-        this._data.paused = time;
-        if (this._data.startPause !== undefined)
-            this._data.startPause = Date.now();
-        this.save();
+    get isEndWorkValid(): boolean {
+        if (this._data.endWork === undefined)
+            return false;
+        if (this._data.endWork <= this._data.startWork)
+            return true;
+        return this._data.events.find(e => e.start > this._data.endWork || e.end > this._data.endWork) === undefined;
     }
 
-    get startPause(): number {return this._data.startPause;}
+    get isPaused(): boolean {return this._data.events.find(e => e.type === TimeControlEventType.PAUSE && e.end === undefined) !== undefined;}
+
+    get pausedTime(): number {
+        let ret = 0;
+        this._data.events.forEach(e => {
+            if (e.type === TimeControlEventType.PAUSE) {
+                if (e.end !== undefined)
+                    ret += e.end - e.start;
+                else
+                    ret += this.now() - e.start;
+            }
+        });
+        return ret;
+    }
 
     get startWork(): number {return this._data.startWork;}
 
@@ -42,40 +51,57 @@ export class TimeControlService {
         this.save();
     }
 
+    get valid(): boolean {
+        if (this._data.startWork === undefined)
+            return false;
+        if (this._data.endWork === undefined)
+            return false;
+        if (this._data.startWork > this._data.endWork)
+            return false;
+        if (this._data.events.length > 0) {
+            let ev = this._data.events[0];
+            if (ev.start < this._data.startWork)
+                return false;
+            ev = this._data.events[this._data.events.length - 1];
+            if (ev.start > this._data.endWork || ev.end > this._data.endWork)
+                return false;
+        }
+        const rangedEvents = this._data.events.filter(e => e.end !== undefined);
+        for (let i = 1; i < rangedEvents.length; ++i) {
+            if (rangedEvents[i].start < rangedEvents[i - 1].end)
+                return false;
+        }
+        return true;
+    }
+
     get task(): number {
-        return this._data.currentTask;
+        const found = this._data.events.find(ev => ev.type === TimeControlEventType.TASK && ev.end === undefined);
+        return found !== undefined ? found.id : 0;
     }
 
     set task(id: number) {
-        const now = Date.now();
-        this.logTask(now);
-        this._data.currentTask = id;
-        if (this._data.startWork !== undefined) {
-            this.startTask(now);
+        const now = this.now();
+        if (this._data.startWork === undefined || this._data.endWork !== undefined)
+            return;
+        this.endLastEvent(now);
+        if (id !== 0) {
+            this._data.events.push({
+                type: TimeControlEventType.TASK,
+                start: now,
+                id: id
+            });
         }
         this.save();
     }
 
-    get tasks(): {[key: number]: number} {
-        const ret = {};
-        for (let k in this._data.tasks) {
-            const id = parseInt(k);
-            if (this._data.currentTask === id && this._data.startTask !== undefined) {
-                ret[id] = this._data.tasks[id] + Date.now() - this._data.startTask;
-            } else
-                ret[id] = this._data.tasks[id];
-        }
-        return ret;
-    }
-
-    get worked(): number {
+    get workedTime(): number {
         if (this._data.startWork !== undefined) {
             if (this._data.endWork === undefined)
-                return Date.now() - this._data.startWork - this.paused;
+                return this.now() - this._data.startWork - this.pausedTime;
             else
-                return this._data.endWork - this._data.startWork - this.paused;
+                return this._data.endWork - this._data.startWork - this.pausedTime;
         } else
-            return this.paused;
+            return 0;
     }
 
     constructor(private storeService: StoreService) {
@@ -84,42 +110,87 @@ export class TimeControlService {
             this.reset();
     }
 
+    calculateTasks(): {[key: number]: number} {
+        const ret: {[key: number]: number} = {};
+        this._data.events.forEach(ev => {
+            if (ev.type === TimeControlEventType.TASK) {
+                const amount = ev.end - ev.start;
+                const current = ret[ev.id];
+                if (current === undefined)
+                    ret[ev.id] = amount;
+                else
+                    ret[ev.id] = current + amount;
+            }
+        });
+        return ret;
+    }
+
+    isEventValid(ev: number): boolean {
+        const event = this._data.events[ev];
+        if (event.start < this._data.startWork)
+            return false;
+        if (event.type === TimeControlEventType.EVENT)
+            return true;
+        for (let i = 0; i < ev; ++i) {
+            const ev2 = this._data.events[i];
+            if (ev2.start > event.start || ev2.end > event.start)
+                return false;
+        }
+        return event.end === undefined || event.end > event.start;
+    }
+
+    logEvent(event: number): void {
+        const now = this.now();
+        this._data.events.push({
+            type: TimeControlEventType.EVENT,
+            start: now,
+            id: event
+        });
+    }
+
+    moveEventByIndex(eventIndex: number, start: number, end: number): void {
+        this._data.events[eventIndex].start = start;
+        this._data.events[eventIndex].end = end;
+        this._data.events.sort((e1, e2) => e1.start - e2.start);
+        this.save();
+    }
+
     pause(): void {
-        if (this._data.startPause === undefined) {
-            const now = Date.now();
-            this._data.startPause = now;
-            this.logTask(now);
-            this._data.startTask = undefined;
-            if (this._data.firstPause === undefined)
-                this._data.firstPause = now;
+        if (!this.isPaused) {
+            const now = this.now();
+            this.endLastEvent(now);
+            this._data.events.push({
+                type: TimeControlEventType.PAUSE,
+                start: now
+            });
             this.save();
         }
     }
 
+    removeEventByIndex(eventIndex: number): void {
+        this._data.events.splice(eventIndex, 1);
+        this.save();
+    }
+
     reset(): void {
         this._data = {
-            paused: 0,
-            currentTask: 0,
-            tasks: {}
+            events: []
         };
         this.save();
     }
 
     resume(): void {
-        if (this._data.startPause !== undefined) {
-            const now = Date.now();
-            this._data.paused += now - this._data.startPause;
-            this._data.startPause = undefined;
-            this.startTask(now);
+        if (this.isPaused) {
+            const now = this.now();
+            this.endLastEvent(now);
             this.save();
         }
     }
 
     start(): void {
         if (this._data.startWork === undefined) {
-            const now = Date.now();
+            const now = this.now();
             this._data.startWork = now;
-            this.startTask(now);
             this.save();
         }
     }
@@ -127,32 +198,26 @@ export class TimeControlService {
     stop(): void {
         this.resume();
         if (this._data.startWork !== undefined) {
-            const now = Date.now();
+            const now = this.now();
             this._data.endWork = now;
-            this.logTask(now);
-            this._data.startTask = undefined;
+            this.endLastEvent(now);
             this.save();
         }
     }
 
+    private endLastEvent(time: number): void {
+        const last = this._data.events.find(e => (e.type === TimeControlEventType.PAUSE || e.type === TimeControlEventType.TASK) && e.end === undefined);
+        if (last !== undefined)
+            last.end = time;
+    }
+
+    private now(): number {
+        const ret = new Date();
+        ret.setSeconds(0, 0);
+        return ret.getTime();
+    }
+
     private save(): void {
         this.storeService.save('timeControl', this._data);
-    }
-
-    private startTask(time: number): void {
-        this._data.startTask = time;
-        if (this._data.tasks[this._data.currentTask] === undefined)
-            this._data.tasks[this._data.currentTask] = 0;
-    }
-
-    private logTask(time: number): void {
-        if (this._data.startTask !== undefined && this._data.startTask < time) {
-            const worked = time - this._data.startTask;
-            const workedForTask = this._data.tasks[this._data.currentTask];
-            if (workedForTask === undefined)
-                this._data.tasks[this._data.currentTask] = worked;
-            else
-                this._data.tasks[this._data.currentTask] = worked + workedForTask;
-        }
     }
 }

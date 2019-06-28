@@ -1,6 +1,6 @@
 
 import {Injectable} from '@angular/core';
-import {CalendarJson, CalendarDayJson} from 'src/app/calendar/calendar';
+import {CalendarJson, CalendarDayJson, CalendarEventJson} from 'src/app/calendar/calendar';
 import {StoreService} from 'src/app/common/store.service';
 import {SettingsService} from 'src/app/settings/settings.service';
 import {TimeService} from 'src/app/common/time.service';
@@ -16,10 +16,16 @@ export class CalendarService {
         this._data = this.storeService.load('calendar');
         if (this._data === undefined) {
             this._data = {
-                month: {}
+                month: {},
+                roundingBonus: 0
             };
             this.save();
         }
+    }
+
+    deleteDay(month: number, day: number): void {
+        delete this._data.month[month].day[day];
+        this.save();
     }
 
     getAllEntriesByMonth(month: number): CalendarDayJson[] {
@@ -64,23 +70,23 @@ export class CalendarService {
         return false;
     }
 
-    logTasks(startTime: number, tasks: {[key: number]: number}): void {
+    logTasksAndEvents(startTime: number, tasks: {[key: number]: number}, events: CalendarEventJson[]): void {
         const startDate = this.timeService.timeToDate(startTime);
         const entry = this.getEntryForDate(startDate);
         entry.tasks = {};
         for (let task in tasks) {
             entry.tasks[parseInt(task)] = this.settingsService.adjustWithGranularity(tasks[task]);
         }
+        entry.events = events.filter(e => true);
         this.save();
     }
 
-    logWork(startTime: number, endTime: number, startPause: number, pauseDuration: number): void {
+    logWork(startTime: number, endTime: number, pauseDuration: number): void {
         const startDate = this.timeService.timeToDate(startTime);
         const entry = this.getEntryForDate(startDate);
         entry.startWork = this.settingsService.adjustWithGranularity(startTime);
         entry.endWork = this.settingsService.adjustWithGranularity(endTime);
-        entry.startPause = this.settingsService.adjustWithGranularity(startPause);
-        entry.endPause = this.settingsService.adjustWithGranularity(startPause + pauseDuration);
+        entry.paused = this.settingsService.adjustWithGranularity(pauseDuration);
         this.save();
     }
 
@@ -99,9 +105,10 @@ export class CalendarService {
             dayJson = {
                 startWork: 0,
                 endWork: 0,
-                startPause: 0,
-                endPause: 0,
-                tasks: {}
+                paused: 0,
+                tasks: {},
+                events: [],
+                comments: {}
             };
             monthJson.day[day] = dayJson;
         }

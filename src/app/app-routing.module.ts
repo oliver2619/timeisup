@@ -10,11 +10,18 @@ import {SettingsComponent} from 'src/app/settings/settings.component';
 import {EditCategoryComponent} from 'src/app/edit-category/edit-category.component';
 import {EditDayComponent} from 'src/app/edit-day/edit-day.component';
 import {EditTaskComponent} from 'src/app/edit-task/edit-task.component';
+import {EventsComponent} from 'src/app/events/events.component';
+import {EditEventComponent} from 'src/app/edit-event/edit-event.component';
+import {AboutComponent} from 'src/app/about/about.component';
 
 const routes: Routes = [{
     path: '',
     pathMatch: 'full',
     component: WelcomeComponent
+}, {
+    path: 'about',
+    pathMatch: 'full',
+    component: AboutComponent
 }, {
     path: 'calendar',
     pathMatch: 'full',
@@ -35,6 +42,14 @@ const routes: Routes = [{
     path: 'dashboard',
     pathMatch: 'full',
     component: DashboardComponent
+}, {
+    path: 'events',
+    pathMatch: 'full',
+    component: EventsComponent
+}, {
+    path: 'events/:id',
+    pathMatch: 'full',
+    component: EditEventComponent
 }, {
     path: 'settings',
     pathMatch: 'full',

@@ -1,0 +1,28 @@
+<table class="table table-sm">
+    <tbody>
+        <tr *ngIf="hasStartDate">
+            <td>Start</td>
+            <td>{{startDate | date:'H:mm'}}</td>
+            <td class="text-right">
+                <button (click)="editStartTime()" class="btn btn-sm btn-secondary mx-1"><span class="fas fa-edit"></span></button>
+            </td>
+        </tr>
+        <tr *ngFor="let e of events; let i = index">
+            <td>{{e.name}}</td>
+            <td><span [ngClass]="{'text-danger': isEventInvalid(i)}">{{e.event.start | date:'H:mm'}}</span> - {{e.event.end | date:'H:mm'}}</td>
+            <td class="text-right">
+                <button (click)="editEvent(i)" class="btn btn-sm btn-secondary mx-1"><span class="fas fa-edit"></span></button>
+                <button (click)="removeEvent(i)" class="btn btn-danger btn-sm mx-1"><span class="fas fa-times"></span></button>
+            </td>
+        </tr>
+        <tr *ngIf="hasEndDate">
+            <td>End</td>
+            <td [ngClass]="{'text-danger': isEndDateInvalid}">{{endDate | date:'H:mm'}}</td>
+            <td class="text-right">
+                <button (click)="editEndTime()" class="btn btn-sm btn-secondary mx-1"><span class="fas fa-edit"></span></button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<t-dialog #dlgTime [content]="time"><t-edit-time #time></t-edit-time></t-dialog>
+<t-dialog #dlgTimespan [content]="timespan"><t-edit-start-end-time #timespan></t-edit-start-end-time></t-dialog>

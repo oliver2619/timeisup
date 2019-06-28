@@ -25,8 +25,7 @@ export class EditTimeComponent implements OnInit, DialogContent {
         const d = new Date();
         d.setHours(0);
         d.setMinutes(0);
-        d.setSeconds(0);
-        d.setMilliseconds(0);
+        d.setSeconds(0, 0);
         const t1 = d.getTime();
         d.setHours(v['hour']);
         d.setMinutes(v['minute']);
@@ -39,6 +38,7 @@ export class EditTimeComponent implements OnInit, DialogContent {
         const v = this.formGroup.value['time'];
         d.setHours(v['hour']);
         d.setMinutes(v['minute']);
+        d.setSeconds(0, 0);
         return d.getTime();
     }
 
@@ -81,6 +81,4 @@ export class EditTimeComponent implements OnInit, DialogContent {
         v['time'] = {hour: this._date.getHours(), minute: this._date.getMinutes()};
         this.formGroup.setValue(v);
     }
-
-
 }

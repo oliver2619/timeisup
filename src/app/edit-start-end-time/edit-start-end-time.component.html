@@ -1,0 +1,10 @@
+<form [formGroup]="formGroup">
+    <div class="form-group">
+        <label>Start</label>
+        <ngb-timepicker formControlName="start"></ngb-timepicker>
+    </div>
+    <div *ngIf="hasEnd" class="form-group">
+        <label>End</label>
+        <ngb-timepicker formControlName="end"></ngb-timepicker>
+    </div>
+</form>

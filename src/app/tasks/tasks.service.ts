@@ -54,7 +54,7 @@ export class TasksService {
             if (task.name !== name) {
                 const found = this.getByName(name);
                 if (found !== undefined)
-                    throw new Error(`There already is a task with the name '${name}'`);
+                    throw new Error(`Task with name ${name} already exists.`);
             }
             task.name = name;
             task.categories = categories.map(v => v);
@@ -70,6 +70,11 @@ export class TasksService {
         return this._data.tasks.find(c => c.name === name);
     }
 
+    getTaskNameById(id: number, defaultName?: string): string {
+        const task = this.getById(id);
+        return task !== undefined ? task.name : defaultName;
+    }
+    
     private save(): void {
         this.storeService.save('tasks', this._data);
     }
