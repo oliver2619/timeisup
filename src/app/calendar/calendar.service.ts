@@ -12,6 +12,10 @@ export class CalendarService {
 
     private _data: CalendarJson;
 
+    get bonusTime(): number {
+        return this._data.roundingBonus;
+    }
+    
     constructor(private storeService: StoreService, private settingsService: SettingsService, private timeService: TimeService) {
         this._data = this.storeService.load('calendar');
         if (this._data === undefined) {
@@ -20,6 +24,11 @@ export class CalendarService {
                 roundingBonus: 0
             };
             this.save();
+        } else {
+            if (this._data.roundingBonus === undefined) {
+                this._data.roundingBonus = 0;
+                this.save();
+            }
         }
     }
 

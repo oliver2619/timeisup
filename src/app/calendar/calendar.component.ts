@@ -21,6 +21,10 @@ export class CalendarComponent implements OnInit {
 
     formGroup: FormGroup;
 
+    get bonusTime(): Date {
+        return this.timeService.durationToDate(this.calendarService.bonusTime);
+    }
+    
     get days(): CalendarData[] {
         const month = parseInt(this.formGroup.value['month']);
         //const filter = this.formGroup.value['filter'];

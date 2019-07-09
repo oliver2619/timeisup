@@ -3,7 +3,7 @@
     "short_name": "timeisup",
     "theme_color": "#0050a2",
     "background_color": "#0050a2",
-    "display": "fullscreen",
+    "display": "standalone",
     "orientation": "portrait",
     "scope": "/oliver2619.github.io/timeisup",
     "start_url": "/oliver2619.github.io/timeisup",

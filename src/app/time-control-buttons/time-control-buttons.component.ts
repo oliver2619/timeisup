@@ -1,5 +1,7 @@
 import {Component} from '@angular/core';
 import {TimeControlService} from 'src/app/time-control/time-control.service';
+import {MessageBoxService} from 'src/app/message-box/message-box.service';
+import {QuestionResult, QuestionMode} from 'src/app/message-box/message-box';
 
 @Component({
     selector: 't-time-control-buttons',
@@ -25,6 +27,7 @@ export class TimeControlButtonsComponent {
     }
 
     constructor(
+        private messageBoxService: MessageBoxService,
         private timeControlService: TimeControlService
     ) {}
 
@@ -41,6 +44,10 @@ export class TimeControlButtonsComponent {
     }
 
     stop(): void {
-        this.timeControlService.stop();
+        this.messageBoxService.question('Have you finished all work for today?', QuestionMode.YES_NO, 'Stop').subscribe(r => {
+            if (r === QuestionResult.YES) {
+                this.timeControlService.stop();
+            }
+        });
     }
 }

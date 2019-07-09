@@ -87,20 +87,16 @@ export class TimeControlComponent implements OnInit, OnDestroy {
     }
 
     save(): void {
-        this.messageBoxService.question('Have you finished all work for today?', QuestionMode.YES_NO, 'Saving worklog').subscribe(r => {
-            if (r === QuestionResult.YES) {
-                this.calendarService.logWork(this.timeControlService.startWork, this.timeControlService.endWork, this.timeControlService.pausedTime);
-                const events: CalendarEventJson[] = this.timeControlService.events.filter(e => e.type === TimeControlEventType.EVENT).map(e => {
-                    return {
-                        time: e.start,
-                        event: e.id
-                    };
-                });
-                this.calendarService.logTasksAndEvents(this.timeControlService.startWork, this.timeControlService.calculateTasks(), events);
-                this.timeControlService.reset();
-                this.reload();
-            }
+        this.calendarService.logWork(this.timeControlService.startWork, this.timeControlService.endWork, this.timeControlService.pausedTime);
+        const events: CalendarEventJson[] = this.timeControlService.events.filter(e => e.type === TimeControlEventType.EVENT).map(e => {
+            return {
+                time: e.start,
+                event: e.id
+            };
         });
+        this.calendarService.logTasksAndEvents(this.timeControlService.startWork, this.timeControlService.calculateTasks(), events);
+        this.timeControlService.reset();
+        this.reload();
     }
 
     startTask(): void {
