@@ -15,7 +15,12 @@ export class CalendarService {
     get bonusTime(): number {
         return this._data.roundingBonus;
     }
-    
+
+    set bonusTime(time: number) {
+        this._data.roundingBonus = time;
+        this.save();
+    }
+
     constructor(private storeService: StoreService, private settingsService: SettingsService, private timeService: TimeService) {
         this._data = this.storeService.load('calendar');
         if (this._data === undefined) {
@@ -93,9 +98,12 @@ export class CalendarService {
     logWork(startTime: number, endTime: number, pauseDuration: number): void {
         const startDate = this.timeService.timeToDate(startTime);
         const entry = this.getEntryForDate(startDate);
-        entry.startWork = this.settingsService.adjustWithGranularity(startTime);
-        entry.endWork = this.settingsService.adjustWithGranularity(endTime);
-        entry.paused = this.settingsService.adjustWithGranularity(pauseDuration);
+        entry.startWork = startTime;
+        entry.endWork = endTime;
+        entry.paused = pauseDuration;
+        const time = endTime - startTime - pauseDuration + this._data.roundingBonus;
+        entry.accountableWorkingTime = this.settingsService.adjustTotalTime(time);
+        this._data.roundingBonus = time - entry.accountableWorkingTime;
         this.save();
     }
 
@@ -115,6 +123,7 @@ export class CalendarService {
                 startWork: 0,
                 endWork: 0,
                 paused: 0,
+                accountableWorkingTime: 0,
                 tasks: {},
                 events: [],
                 comments: {}

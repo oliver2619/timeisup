@@ -1,2 +1,20 @@
 <t-menubar></t-menubar>
-<div class="container"></div>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <table class="table table-sm">
+                <tbody>
+                    <tr>
+                        <th><label>Bonus time</label></th>
+                        <td>{{bonusTime | date:'H:mm'}}</td>
+                        <td>
+                            <button (click)="editBonusTime()" class="btn btn-sm btn-secondary ml-2"><span class="fas fa-edit"></span></button>
+                            <button (click)="clearBonusTime()" class="btn btn-danger btn-sm ml-3"><span class="fas fa-times"></span></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<t-dialog #dlgTime [content]="time"><t-edit-time #time></t-edit-time></t-dialog>

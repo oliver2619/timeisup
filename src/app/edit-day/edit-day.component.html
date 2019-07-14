@@ -17,6 +17,11 @@
                 <td class="text-right">{{durationDate | date:'H:mm'}}</td>
                 <td class="text-right">{{durationHours | number:'1.1-1'}} h</td>
             </tr>
+            <tr>
+                <th>Accountable time</th>
+                <td class="text-right">{{accountableDate | date:'H:mm'}}</td>
+                <td class="text-right">{{accountableHours | number:'1.1-1'}} h</td>
+            </tr>
             <tr *ngFor="let t of tasks">
                 <td>{{t.name}}</td>
                 <td class="text-right">{{t.durationDate | date:'H:mm'}}</td>

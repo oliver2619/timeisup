@@ -7,6 +7,7 @@ export interface CalendarDayJson {
     startWork: number;
     endWork: number;
     paused: number;
+    accountableWorkingTime: number;
     tasks: {[key: number]: number};
     events: CalendarEventJson[];
     comments: {[key: number]: string};

@@ -52,7 +52,16 @@ export class SettingsService {
 
     adjustWithGranularity(time: number): number {
         const g = this._data.work.granularity * 60 * 1000;
-        return Math.round(time / g) * g;
+        return Math.floor(time / g) * g;
+    }
+
+    adjustTotalTime(time: number): number {
+        const ret = this.adjustWithGranularity(time);
+        const max = this._data.work.maxHoursPerDay * 60 * 60 * 1000;
+        if (ret > max && max > 0) {
+            return max;
+        }
+        return ret;
     }
 
     private save(): void {this.storeService.save('settings', this._data);}

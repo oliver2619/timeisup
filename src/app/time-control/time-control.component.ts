@@ -43,9 +43,7 @@ export class TimeControlComponent implements OnInit, OnDestroy {
 
     get tasks(): TaskJson[] {return this.tasksService.all;}
 
-    get workedHours(): number {
-        return Math.floor(100 * this.timeControlService.workedTime / (1000 * 60 * 60) / 100);
-    }
+    get workedHours(): number {return this.timeControlService.workedTime / (1000 * 60 * 60);}
 
     get workedDate(): Date {return this.timeService.durationToDate(this.timeControlService.workedTime);}
 
@@ -102,7 +100,6 @@ export class TimeControlComponent implements OnInit, OnDestroy {
     startTask(): void {
         this.timeControlService.task = parseInt(this.formGroup.value['task']);
     }
-
 
     private reload(): void {
         const v = this.formGroup.value;

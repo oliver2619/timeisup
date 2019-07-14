@@ -21,10 +21,6 @@ export class CalendarComponent implements OnInit {
 
     formGroup: FormGroup;
 
-    get bonusTime(): Date {
-        return this.timeService.durationToDate(this.calendarService.bonusTime);
-    }
-    
     get days(): CalendarData[] {
         const month = parseInt(this.formGroup.value['month']);
         //const filter = this.formGroup.value['filter'];
@@ -33,8 +29,8 @@ export class CalendarComponent implements OnInit {
         return list.map(e => {
             return {
                 start: this.timeService.timeToDate(e.startWork),
-                time: this.timeService.durationToDate(e.endWork - e.startWork - e.paused),
-                duration: (e.endWork - e.startWork - e.paused) / (1000 * 60 * 60)
+                time: this.timeService.durationToDate(e.accountableWorkingTime),
+                duration: (e.accountableWorkingTime) / (1000 * 60 * 60)
             };
         });
     }

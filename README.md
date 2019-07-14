@@ -1,14 +1,15 @@
 # Timeisup
-
 ## TODO
-
+### Prio 1
+* NLS de
+* Calendar clean entries older than 9 months.
+* Help pages
+### Prio 2
 * Timecontrol stretch tasks
-* Granularity rounding bonus
-* Max. hours per day
-* Calendar add / show: absences / vacations
-* Display version
-
-* Overview vacations, absences, overtime
-* Estimated end time
-* Remaining working days
-* Dashboard?
+* Dashboard current status
+* Timer should not run when work not started or already completed
+### Maybe
+* Calendar add / show: absences / vacations?
+* Overview vacations, absences, overtime?
+* Estimated end time?
+* Remaining working days?

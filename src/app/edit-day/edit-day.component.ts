@@ -28,6 +28,14 @@ export class EditDayComponent implements OnInit {
 
     private _data: CalendarDayJson;
 
+    get accountableDate(): Date {
+        return this.timeService.durationToDate(this._data.accountableWorkingTime);
+    }
+
+    get accountableHours(): number {
+        return this._data.accountableWorkingTime / (1000 * 60 * 60);
+    }
+
     get categories(): EditDayTaskData[] {
         const cats: {[key: number]: number} = {};
         for (let t in this._data.tasks) {
