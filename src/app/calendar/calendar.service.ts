@@ -10,6 +10,8 @@ import {TimeService} from 'src/app/common/time.service';
 })
 export class CalendarService {
 
+    private static readonly VERSION = 1;
+
     private _data: CalendarJson;
 
     get bonusTime(): number {
@@ -25,20 +27,27 @@ export class CalendarService {
         this._data = this.storeService.load('calendar');
         if (this._data === undefined) {
             this._data = {
+                version: CalendarService.VERSION,
                 month: {},
                 roundingBonus: 0
             };
             this.save();
-        } else {
+        } else if (this._data.version === undefined) {
+            this._data.version = CalendarService.VERSION;
             if (this._data.roundingBonus === undefined) {
                 this._data.roundingBonus = 0;
-                this.save();
             }
+            this.save();
         }
     }
 
     deleteDay(month: number, day: number): void {
         delete this._data.month[month].day[day];
+        this.save();
+    }
+
+    deleteMonth(month: number): void {
+        delete this._data.month[month];
         this.save();
     }
 
@@ -69,6 +78,33 @@ export class CalendarService {
             return undefined;
         }
         return m.day[day];
+    }
+
+    getNextDay(month: number, day: number): number | undefined {
+        const m = this._data.month[month];
+        if (m === undefined) {
+            return undefined;
+        }
+        const previousDays = Object.keys(m.day).map(d => Number(d)).filter(d => d > day);
+        return previousDays.length > 0 ? previousDays[0] : undefined;
+    }
+
+    getPreviousDay(month: number, day: number): number | undefined {
+        const m = this._data.month[month];
+        if (m === undefined) {
+            return undefined;
+        }
+        const previousDays = Object.keys(m.day).map(d => Number(d)).filter(d => d < day);
+        return previousDays.length > 0 ? previousDays[previousDays.length - 1] : undefined;
+    }
+
+    getTotalSumByMonth(month: number): number {
+        let ret = 0;
+        const m = this._data.month[month];
+        if (m !== undefined) {
+            Object.values(m.day).forEach((v: CalendarDayJson) => ret += v.accountableWorkingTime);
+        }
+        return ret;
     }
 
     isTaskUsed(id: number): boolean {

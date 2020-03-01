@@ -1,4 +1,10 @@
-<t-menubar></t-menubar>
+<t-menubar>
+    <li class="nav-item">
+        <a (click)="removeAll()" class="nav-link" href="javascript:;">
+            <span class="fas fa-trash-alt"></span>
+        </a>
+    </li>
+</t-menubar>
 <div class="container">
     <form [formGroup]="formGroup" class="my-3">
         <div class="form-row">
@@ -25,6 +31,12 @@
                     <button (click)="editDay(day.start)" class="btn btn-sm btn-secondary ml-2"><span class="fas fa-edit"></span></button>
                     <button (click)="deleteDay(day.start)" class="btn btn-danger btn-sm ml-3"><span class="fas fa-times"></span></button>
                 </td>
+            </tr>
+            <tr>
+                <th>Total</th>
+                <td></td>
+                <td>{{totalHours | number:'1.1-1'}} h</td>
+                <td></td>
             </tr>
         </tbody>
     </table>

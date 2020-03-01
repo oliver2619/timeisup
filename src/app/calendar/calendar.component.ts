@@ -39,6 +39,10 @@ export class CalendarComponent implements OnInit {
         return this.calendarService.getAllMonthsAsDate();
     }
 
+    get totalHours(): number{
+        return this.calendarService.getTotalSumByMonth(this.formGroup.value['month']) / (1000 * 60 * 60);
+    }
+    
     constructor(
         private formBuilder: FormBuilder,
         private calendarService: CalendarService,
@@ -63,5 +67,13 @@ export class CalendarComponent implements OnInit {
         this.formGroup = this.formBuilder.group({});
         this.formGroup.addControl('month', this.formBuilder.control(new Date().getMonth(), {}));
         this.formGroup.addControl('filter', this.formBuilder.control('all', {}));
+    }
+
+    removeAll(): void {
+        this.messageBoxService.question(`Do you want to delete all entries for this month?`, QuestionMode.YES_NO, 'Delete all').subscribe(result => {
+            if (result === QuestionResult.YES) {
+                this.calendarService.deleteMonth(this.formGroup.value['month']);
+            }
+        });
     }
 }

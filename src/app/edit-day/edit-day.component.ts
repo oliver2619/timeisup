@@ -26,6 +26,10 @@ export interface EditDayEventData {
 })
 export class EditDayComponent implements OnInit {
 
+    month: number;
+    previousDay: number;
+    nextDay: number;
+
     private _data: CalendarDayJson;
 
     get accountableDate(): Date {
@@ -82,6 +86,14 @@ export class EditDayComponent implements OnInit {
             };
         });
     }
+    
+    get hasPrevDay(): boolean {
+        return this.previousDay !== undefined;
+    }
+    
+    get hasNextDay(): boolean {
+        return this.nextDay !== undefined;
+    }
 
     get pausedDate(): Date {
         return this.timeService.durationToDate(this._data.paused);
@@ -121,9 +133,11 @@ export class EditDayComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        const month = parseInt(this.activatedRoute.snapshot.params['month']);
+        this.month = parseInt(this.activatedRoute.snapshot.params['month']);
         const day = parseInt(this.activatedRoute.snapshot.params['day']);
-        this._data = this.calendarService.getByDay(month, day);
+        this._data = this.calendarService.getByDay(this.month, day);
+        this.previousDay = this.calendarService.getPreviousDay(this.month, day);
+        this.nextDay = this.calendarService.getNextDay(this.month, day);
     }
 
 }

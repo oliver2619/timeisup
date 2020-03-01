@@ -1,6 +1,6 @@
 
 import {BrowserModule} from '@angular/platform-browser';
-import {NgModule} from '@angular/core';
+import {NgModule, Injectable, ErrorHandler} from '@angular/core';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 import {AppRoutingModule} from './app-routing.module';
@@ -31,6 +31,18 @@ import { EditStartEndTimeComponent } from './edit-start-end-time/edit-start-end-
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { AboutComponent } from './about/about.component';
+import {ErrorMessageService} from 'src/app/error-message/error-message.service';
+
+@Injectable()
+export class CustomErrorHandler implements ErrorHandler {
+
+    constructor(private messageService: ErrorMessageService) {}
+
+    handleError(error: any): void {
+        this.messageService.error(error)
+        console.error(error);
+    }
+}
 
 @NgModule({
     declarations: [
@@ -66,7 +78,9 @@ import { AboutComponent } from './about/about.component';
         NgbModule,
         ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
     ],
-    providers: [],
+    providers: [
+        {provide: ErrorHandler, useClass: CustomErrorHandler}
+    ],
     bootstrap: [AppComponent]
 })
 export class AppModule {}

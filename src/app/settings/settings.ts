@@ -10,5 +10,6 @@ export interface WorkSettingsJson {
 }
 
 export interface SettingsJson {
+    version?: number;
     work: WorkSettingsJson;
 }

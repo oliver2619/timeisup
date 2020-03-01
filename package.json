@@ -1,10 +1,10 @@
 {
   "name": "timeisup",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "buildLocal": "ng build",
+    "buildLocal": "ng build --prod",
     "buildPublic": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",

@@ -18,6 +18,7 @@ export interface CalendarMonthJson {
 }
 
 export interface CalendarJson {
+    version?: number;
     month: {[key: number]: CalendarMonthJson};
     roundingBonus: number;
 }

@@ -8,12 +8,15 @@ import {SettingsJson, WorkSettingsJson} from 'src/app/settings/settings';
 })
 export class SettingsService {
 
+    private static readonly VERSION = 1;
+    
     private _data: SettingsJson;
 
     constructor(private storeService: StoreService) {
         this._data = this.storeService.load('settings');
         if (this._data === undefined) {
             this._data = {
+                version: SettingsService.VERSION,
                 work: {
                     hoursPerWeek: 40,
                     workingRate: 1,
@@ -24,6 +27,13 @@ export class SettingsService {
                     su: false
                 }
             };
+            this.save();
+        } else if (this._data.version === undefined) {
+            this._data.version = SettingsService.VERSION;
+            if (this._data.work.granularity === undefined) {
+                this._data.work.granularity = 30;
+            }
+            this.save();
         }
     }
 
