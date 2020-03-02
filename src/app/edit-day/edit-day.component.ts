@@ -1,5 +1,5 @@
 
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {CalendarService} from 'src/app/calendar/calendar.service';
 import {CalendarDayJson} from 'src/app/calendar/calendar';
@@ -7,6 +7,7 @@ import {TimeService} from 'src/app/common/time.service';
 import {TasksService} from 'src/app/tasks/tasks.service';
 import {CategoriesService} from 'src/app/categories/categories.service';
 import {EventsService} from 'src/app/events/events.service';
+import {Subscription} from 'rxjs';
 
 export interface EditDayTaskData {
     name: string;
@@ -24,12 +25,13 @@ export interface EditDayEventData {
     templateUrl: './edit-day.component.html',
     styleUrls: ['./edit-day.component.scss']
 })
-export class EditDayComponent implements OnInit {
+export class EditDayComponent implements OnInit, OnDestroy {
 
     month: number;
     previousDay: number;
     nextDay: number;
 
+    private subscription: Subscription;
     private _data: CalendarDayJson;
 
     get accountableDate(): Date {
@@ -86,11 +88,11 @@ export class EditDayComponent implements OnInit {
             };
         });
     }
-    
+
     get hasPrevDay(): boolean {
         return this.previousDay !== undefined;
     }
-    
+
     get hasNextDay(): boolean {
         return this.nextDay !== undefined;
     }
@@ -133,11 +135,18 @@ export class EditDayComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.month = parseInt(this.activatedRoute.snapshot.params['month']);
-        const day = parseInt(this.activatedRoute.snapshot.params['day']);
-        this._data = this.calendarService.getByDay(this.month, day);
-        this.previousDay = this.calendarService.getPreviousDay(this.month, day);
-        this.nextDay = this.calendarService.getNextDay(this.month, day);
+        this.subscription = this.activatedRoute.params.subscribe({
+            next: params => {
+                this.month = parseInt(params['month']);
+                const day = parseInt(params['day']);
+                this._data = this.calendarService.getByDay(this.month, day);
+                this.previousDay = this.calendarService.getPreviousDay(this.month, day);
+                this.nextDay = this.calendarService.getNextDay(this.month, day);
+            }
+        });
     }
 
+    ngOnDestroy(): void {
+        this.subscription.unsubscribe();
+    }
 }
