@@ -4,6 +4,7 @@ export interface WorkSettingsJson {
     workingRate: number;
     granularity: number;
     maxHoursPerDay: number;
+    minMinutesBreak: number;
     mo_fr: boolean;
     sa: boolean;
     su: boolean;

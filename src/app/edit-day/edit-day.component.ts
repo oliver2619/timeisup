@@ -8,6 +8,7 @@ import {TasksService} from 'src/app/tasks/tasks.service';
 import {CategoriesService} from 'src/app/categories/categories.service';
 import {EventsService} from 'src/app/events/events.service';
 import {Subscription} from 'rxjs';
+import {SettingsService} from 'src/app/settings/settings.service';
 
 export interface EditDayTaskData {
     name: string;
@@ -42,6 +43,32 @@ export class EditDayComponent implements OnInit, OnDestroy {
         return this._data.accountableWorkingTime / (1000 * 60 * 60);
     }
 
+    get accountableEnd(): Date {
+        let paused: number;
+        if (this._data.accountableWorkingTime > this.settingsService.timePerDay / 2 && this._data.paused < this.settingsService.minBreak) {
+            paused = this.settingsService.minBreak;
+        }else {
+            paused = this._data.paused;
+        }
+        return this.timeService.timeToDate(this._data.startWork + this._data.accountableWorkingTime + paused);
+    }
+
+    get accountablePauseDate(): Date {
+        if (this._data.accountableWorkingTime > this.settingsService.timePerDay / 2 && this._data.paused < this.settingsService.minBreak) {
+            return this.timeService.durationToDate(this.settingsService.minBreak);
+        }else {
+            return this.timeService.durationToDate(this._data.paused);
+        }
+    }
+    
+    get accountablePauseHours(): number {
+        if (this._data.accountableWorkingTime > this.settingsService.timePerDay / 2 && this._data.paused < this.settingsService.minBreak) {
+            return this.settingsService.minBreak / (1000 * 60 * 60);
+        }else {
+            return this._data.paused / (1000 * 60 * 60);
+        }
+    }
+    
     get categories(): EditDayTaskData[] {
         const cats: {[key: number]: number} = {};
         for (let t in this._data.tasks) {
@@ -102,7 +129,7 @@ export class EditDayComponent implements OnInit, OnDestroy {
     }
 
     get pausedHours(): number {
-        return (this._data.paused) / (1000 * 60 * 60);
+        return this._data.paused / (1000 * 60 * 60);
     }
 
     get start(): Date {return this.timeService.timeToDate(this._data.startWork);}
@@ -131,7 +158,8 @@ export class EditDayComponent implements OnInit, OnDestroy {
         private timeService: TimeService,
         private tasksService: TasksService,
         private categoriesService: CategoriesService,
-        private eventsService: EventsService
+        private eventsService: EventsService,
+        private settingsService: SettingsService
     ) {}
 
     ngOnInit(): void {

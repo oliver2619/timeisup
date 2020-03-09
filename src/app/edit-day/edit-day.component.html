@@ -4,21 +4,30 @@
     <table class="table table-sm">
         <tbody>
             <tr>
-                <th>Time</th>
+                <th>Registered time</th>
                 <td colspan="2" class="text-center">{{start | date:'H:mm'}} - {{end | date:'H:mm'}}</td>
             </tr>
             <tr>
-                <th>Paused</th>
+                <th>Registered paused</th>
                 <td class="text-right">{{pausedDate | date:'H:mm'}}</td>
                 <td class="text-right">{{pausedHours | number:'1.1-1'}} h</td>
             </tr>
             <tr>
-                <th>Worked</th>
+                <th>Registered duration</th>
                 <td class="text-right">{{durationDate | date:'H:mm'}}</td>
                 <td class="text-right">{{durationHours | number:'1.1-1'}} h</td>
             </tr>
             <tr>
                 <th>Accountable time</th>
+                <td colspan="2" class="text-center">{{start | date:'H:mm'}} - {{accountableEnd | date:'H:mm'}}</td>
+            </tr>
+            <tr>
+                <th>Accountable pause</th>
+                <td class="text-right">{{accountablePauseDate | date:'H:mm'}}</td>
+                <td class="text-right">{{accountablePauseHours | number:'1.1-1'}} h</td>
+            </tr>
+            <tr>
+                <th>Accountable duration</th>
                 <td class="text-right">{{accountableDate | date:'H:mm'}}</td>
                 <td class="text-right">{{accountableHours | number:'1.1-1'}} h</td>
             </tr>

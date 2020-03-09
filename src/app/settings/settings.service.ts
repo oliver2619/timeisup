@@ -8,7 +8,7 @@ import {SettingsJson, WorkSettingsJson} from 'src/app/settings/settings';
 })
 export class SettingsService {
 
-    private static readonly VERSION = 1;
+    private static readonly VERSION = 2;
     
     private _data: SettingsJson;
 
@@ -22,6 +22,7 @@ export class SettingsService {
                     workingRate: 1,
                     granularity: 30,
                     maxHoursPerDay: 0,
+                    minMinutesBreak: 30,
                     mo_fr: true,
                     sa: false,
                     su: false
@@ -34,6 +35,12 @@ export class SettingsService {
                 this._data.work.granularity = 30;
             }
             this.save();
+        } else if(this._data.version === 1) {
+            this._data.version = SettingsService.VERSION;
+            if (this._data.work.minMinutesBreak === undefined) {
+                this._data.work.minMinutesBreak = 30;
+            }
+            this.save();
         }
     }
 
@@ -41,6 +48,10 @@ export class SettingsService {
         return this._data.work.maxHoursPerDay * 60 * 60 * 1000;
     }
 
+    get minBreak(): number {
+        return this._data.work.minMinutesBreak * 60 * 1000;
+    }
+    
     get timePerDay(): number {
         const s = this._data.work;
         let days = 0;

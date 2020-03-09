@@ -34,6 +34,7 @@ export class SettingsComponent implements OnInit {
         this.formGroup.addControl('maxHours', this.formBuilder.control(0, {validators: [Validators.required, Validators.min(0)]}));
         this.formGroup.addControl('percent', this.formBuilder.control(0, {validators: [Validators.required, Validators.min(1), Validators.max(100)]}));
         this.formGroup.addControl('granularity', this.formBuilder.control(0, {validators: [Validators.required, Validators.min(1)]}));
+        this.formGroup.addControl('minBreak', this.formBuilder.control(0, {validators: [Validators.required, Validators.min(0)]}));
         this.formGroup.addControl('mo_fr', this.formBuilder.control(false, {validators: []}));
         this.formGroup.addControl('sa', this.formBuilder.control(false, {validators: []}));
         this.formGroup.addControl('su', this.formBuilder.control(false, {validators: []}));
@@ -47,6 +48,7 @@ export class SettingsComponent implements OnInit {
             percent: work.workingRate * 100,
             granularity: work.granularity,
             maxHours: work.maxHoursPerDay,
+            minBreak: work.minMinutesBreak,
             mo_fr: work.mo_fr,
             sa: work.sa,
             su: work.su
@@ -60,6 +62,7 @@ export class SettingsComponent implements OnInit {
             workingRate: work['percent'] / 100,
             granularity: work['granularity'],
             maxHoursPerDay: work['maxHours'],
+            minMinutesBreak: work['minBreak'],
             mo_fr: work['mo_fr'],
             sa: work['sa'],
             su: work['su']
